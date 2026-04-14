@@ -1,3 +1,12 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+#include <stddef.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <unistd.h>
+
 int crear_conexion(char *ip, char* puerto){
     struct addrinfo hints;
     struct addrinfo *server_info;
@@ -70,4 +79,9 @@ void* atender_cliente(void* arg){
     }
 
     return NULL;
+}
+void liberar_conexion(int socket) {
+    if (socket != -1) {
+        close(socket);
+    }
 }
