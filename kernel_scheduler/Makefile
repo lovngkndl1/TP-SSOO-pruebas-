@@ -1,13 +1,13 @@
 CC = gcc
-CFLAGS = -I/home/utnso/TP-SSOO-pruebas-/shared -Wall
+
+CFLAGS = -I../shared -Wall -g
 LIBS = -lcommons -lpthread
 
-# El archivo se llama kernel_scheduler.c segun tu carpeta src
-SRCS = src/kernel_scheduler.c /home/utnso/TP-SSOO-pruebas-/shared/conexiones.c
-OBJ = bin/kernel
+SRCS = src/kernel_scheduler.c ../shared/conexiones.c
+OBJ = bin/kernel_scheduler
 
 all: bin
-	$(CC) $(SRCS) -o $(OBJ) $(CFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) $(SRCS) -o $(OBJ) $(LIBS)
 
 bin:
 	mkdir -p bin

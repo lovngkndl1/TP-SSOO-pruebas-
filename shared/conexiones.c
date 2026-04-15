@@ -17,11 +17,7 @@ int crear_conexion(char *ip, char* puerto){
 
     getaddrinfo(ip, puerto, &hints, &server_info);
 
-    int socket_cliente = socket(
-        server_info->ai_family,
-        server_info->ai_socktype,
-        server_info->ai_protocol
-    );
+    int socket_cliente = socket(server_info->ai_family,server_info->ai_socktype,server_info->ai_protocol);
 
     if(connect(socket_cliente, server_info->ai_addr, server_info->ai_addrlen) == -1){
         perror("Error en connect");
@@ -69,17 +65,6 @@ int esperar_cliente(int socket_servidor){
 }
 
 
-void* atender_cliente(void* arg){
-    int cliente = *(int*)arg;
-    free(arg);
-
-    // recibir mensajes
-    while(1) {
-        // recv(...)
-    }
-
-    return NULL;
-}
 void liberar_conexion(int socket) {
     if (socket != -1) {
         close(socket);
