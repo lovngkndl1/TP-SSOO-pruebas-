@@ -15,6 +15,20 @@
 #include <pthread.h>
 
 //////////////////////////////////////////////////
+// PROTOCOLO DE COMUNICACIÓN
+//////////////////////////////////////////////////
+
+typedef enum {
+    IDENTIFICACION_IO, // Para que la IO se presente al Kernel
+    IO_GEN_SLEEP,      // La operación de dormir
+    IO_OK,             // Para avisar que terminó
+    DESCONEXION        // Por si se corta la comunicación
+} op_code;
+
+// Estructura para recibir el código de operación
+int recibir_operacion(int socket_cliente);
+
+//////////////////////////////////////////////////
 // CLIENTE
 //////////////////////////////////////////////////
 

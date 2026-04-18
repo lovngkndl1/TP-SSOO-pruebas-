@@ -7,6 +7,9 @@
 #include "conexiones.h"
 
 t_log* logger;
+t_log* logger;
+int conexion_cpu = -1;   
+int conexion_memoria = -1; 
 
 // ================== THREAD MULTI CLIENTES ==================
 
@@ -23,6 +26,25 @@ void* atender_cliente(void* arg) {
         //pongo sleep mientras tanto hasta que implemente recv y sea bloqueante
     }
 
+    return NULL;
+}
+void* conectar_a_modulo(void* arg) {
+    char** datos = (char**) arg;
+    char* nombre = datos[0];
+    char* ip = datos[1];
+    char* puerto = datos[2];
+
+    int conexion = -1;
+    while(conexion == -1) {
+        log_info(logger, "Intentando conectar a %s...", nombre);
+        conexion = crear_conexion(ip, puerto);
+        if(conexion == -1) {
+            log_warning(logger, "Fallo conexión a %s, reintentando en 2 seg...", nombre);
+            sleep(2);
+        }
+    }
+    log_info(logger, "¡Conectado a %s con éxito!", nombre);
+    // Acá podrían guardar 'conexion' en una variable global si la necesitan después
     return NULL;
 }
 
@@ -55,21 +77,24 @@ int main(int argc, char* argv[]) {
 
     // ================== CONEXION A MEMORIA ==================
 
-    log_info(logger, "Conectando a Memoria...");
-    int conexion_memoria = crear_conexion(ip_memoria, puerto_memoria);
+    
 
-    if(conexion_memoria != -1){
-        log_info(logger, "Conectado a Memoria");
-    }
+    
 
     // ================== CONEXION A CPU ==================
 
-    log_info(logger, "Conectando a CPU...");
-    int conexion_cpu = crear_conexion(ip_cpu, puerto_cpu);
+   // Hilos para conectar sin bloquear el inicio del servidor
+pthread_t hilo_mem, hilo_cpu;
 
-    if(conexion_cpu != -1){
-        log_info(logger, "Conectado a CPU");
-    }
+char* datos_mem[] = {"MEMORIA", ip_memoria, puerto_memoria};
+char* datos_cpu[] = {"CPU", ip_cpu, puerto_cpu};
+
+pthread_create(&hilo_mem, NULL, conectar_a_modulo, datos_mem);
+pthread_create(&hilo_cpu, NULL, conectar_a_modulo, datos_cpu);
+
+pthread_detach(hilo_mem);
+pthread_detach(hilo_cpu);
+    
 
     // ================== SERVIDOR PARA IO ==================
 

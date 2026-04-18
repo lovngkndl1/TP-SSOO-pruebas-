@@ -70,3 +70,21 @@ void liberar_conexion(int socket) {
         close(socket);
     }
 }
+int recibir_operacion(int socket_cliente) {
+    int cod_op;
+    if (recv(socket_cliente, &cod_op, sizeof(int), MSG_WAITALL) > 0) {
+        return cod_op;
+    } else {
+        close(socket_cliente);
+        return -1;
+    }
+}
+
+int recibir_unidades(int socket_cliente) {
+    int unidades;
+    if (recv(socket_cliente, &unidades, sizeof(int), MSG_WAITALL) > 0) {
+        return unidades;
+    } else {
+        return -1;
+    }
+}
